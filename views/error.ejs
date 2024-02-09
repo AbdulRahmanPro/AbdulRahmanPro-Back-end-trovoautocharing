@@ -1,6 +1,23 @@
-extends layout
-
-block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        h1 { color: #ff6b6b; }
+        .error-details { color: #333; background: #f2f2f2; padding: 10px; border-radius: 5px; display: inline-block; }
+    </style>
+</head>
+<body>
+    <h1>Oops!</h1>
+    <h2>Something went wrong.</h2>
+    <div class="error-details">
+        <p><%= message %></p>
+        <% if (error.stack) { %>
+            <pre><%= error.stack %></pre>
+        <% } %>
+    </div>
+</body>
+</html>
