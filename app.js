@@ -28,14 +28,31 @@ mongoose
       // sendActionUpdate();
     });
   })
-  .catch((error) => {
+    .catch((error) => {
     console.error('Error connecting to MongoDB:', error);
   });
 
+
+
+
+app.use(cors());
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/', indexRouter);
+app.use('/auth', usersRouter);
 app.get('/api/actions', function (req, res) {
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+    'Access-Control-Allow-Origin': '*' // هذا يسمح بالوصول من أي أصل
+    // 'Access-Control-Allow-Origin': 'https://trovo.live' // أو استخدم أصل محدد إذا أردت مزيدًا من الأمان
+});
 
   const sendAction = () => {
     Action.findOne().sort({ createdAt: -1 }).then(action => {
@@ -59,21 +76,6 @@ app.get('/api/actions', function (req, res) {
     changeStream.close();
   });
 });
-
-
-app.use(cors());
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-
-app.use('/', indexRouter);
-app.use('/auth', usersRouter);
-
 // التعامل مع الأخطاء 404
 app.use(function (req, res, next) {
   next(createError(404));
@@ -95,30 +97,3 @@ app.use(function (err, req, res, next) {
 });
 
 module.exports = app;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
